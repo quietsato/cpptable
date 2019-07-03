@@ -9,7 +9,7 @@
 #include <vector>
 
 namespace tbl{
-    enum Type {ALL, EVERY_ROW, EVERY_COLUMN, FIRST_ROW, FIRST_COLUMN, FIRST_BOTH};
+    enum Type {ALL, ONLY_ROW, ONLY_COLUMN, FIRST_BOTH};
 
     class Table{
         int row, col;
@@ -18,7 +18,7 @@ namespace tbl{
 
     public:
         bool titleBorder;
-        char hBorderChar, vBorderChar, titleHBorderChar, titleVBorderChar;
+        char hBorderChar, vBorderChar, titleHBorderChar, titleVBorderChar, crossChar;
 
         Table(int, int);
 
