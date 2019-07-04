@@ -9,12 +9,17 @@
 #include <vector>
 
 namespace tbl{
-    enum Type {ALL, ONLY_ROW, ONLY_COLUMN, FIRST_BOTH};
+    enum Type {ALL, ROW_TITLE, COL_TITLE, BOTH_TITLE};
 
     class Table{
-        int row, col;
+        int row, col, width;
+        std::vector<int> colWidth, rowHeight, crossPos;
         std::vector<std::vector<std::string>> content;
         Type type;
+
+        std::string hLine();
+        std::string innerHLine(bool);
+        std::string row_to_string(int);
 
     public:
         bool titleBorder;
