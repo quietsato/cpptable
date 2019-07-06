@@ -8,18 +8,20 @@
 #include <string>
 #include <vector>
 
+using namespace std;
+
 namespace tbl{
     enum Type {ALL, ROW_TITLE, COL_TITLE, BOTH_TITLE};
 
     class Table{
         int row, col, width;
-        std::vector<int> colWidth, rowHeight, crossPos;
-        std::vector<std::vector<std::string>> content;
+        vector<int> colWidth, rowHeight, crossPos;
+        vector<vector<string>> content;
         Type type;
 
-        std::string hLine();
-        std::string innerHLine(bool);
-        std::string row_to_string(int);
+        string hLine();
+        string innerHLine(bool);
+        string row_to_string(int);
 
     public:
         bool titleBorder;
@@ -27,10 +29,10 @@ namespace tbl{
 
         Table(int, int);
 
-        void add_row(std::vector<std::string>);
+        void add_row(vector<string>);
         void delete_row(int);
         void show();
-        std::string to_string();
+        string to_string();
     };
 }
 
