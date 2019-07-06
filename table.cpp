@@ -3,7 +3,6 @@
 //
 
 #include <iostream>
-#include <string>
 #include <algorithm>
 #include <functional>
 #include <numeric>
@@ -36,12 +35,12 @@ tbl::Table::Table(int row, int col) {
     this->crossChar = '+';
 }
 
-void tbl::Table::add_row(vector<std::string> cols) {
+void tbl::Table::add_row(vector<string> cols) {
     while (cols.size() < this->row)
         cols.emplace_back("");
 
     for (int i = 0; i < this->row; i++)
-        this->content.emplace_back(cols[i]);
+        this->content.push_back(cols);
 }
 
 void tbl::Table::delete_row(int i) {
@@ -65,8 +64,8 @@ string tbl::Table::to_string() {
     this->width = sum(this->colWidth) + this->col;
     this->crossPos = findCross(colWidth);
 
-
     str += hLine();
+    cout << str;
 
     for (int i = 0; i < row; i++) {
         str += row_to_string(i);
@@ -93,6 +92,9 @@ string tbl::Table::hLine() {
 }
 
 string tbl::Table::row_to_string(int r) {
+    string ret;
+    ret += vBorderChar;
+
     vector<string> _row = content[r];
     int _height = rowHeight[r];
     vector<vector<string>> separate;
@@ -106,9 +108,17 @@ string tbl::Table::row_to_string(int r) {
             lines.push_back(cell.substr(0, pos));
             cell.erase(0, pos + 1);
         }
+        separate.push_back(lines);
     }
 
-    return "";
+    for(int l = 0; l < _height; l++){
+        for(const vector<string>& cell: separate){
+            ret += cell[l];
+            ret += vBorderChar;
+        }
+    }
+
+    return ret + '\n';
 }
 
 string tbl::Table::innerHLine(bool isRowTitle) {
