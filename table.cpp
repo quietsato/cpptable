@@ -155,7 +155,7 @@ string tbl::Table::row_to_string(int r) {
         lines.clear();
     }
 
-    bool isColTitle = true;
+    bool isColTitle = (col != 1);
     for(int l = 0; l < _height; l++){
         ret += outerVBorderChar;
         for(int c = 0; c < col; c++){
