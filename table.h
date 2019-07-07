@@ -24,13 +24,14 @@ namespace tbl{
         string row_to_string(int);
 
     public:
-        bool titleBorder;
-        char hBorderChar, vBorderChar, titleHBorderChar, titleVBorderChar, crossChar;
+        char hBorderChar, vBorderChar, outerHBorderChar, outerVBorderChar, titleHBorderChar, titleVBorderChar, crossChar;
 
         Table(int, int);
 
+        void setStyle(Type t);
         void add_row(vector<string>);
         void delete_row(int);
+        void clear();
         void show();
         string to_string();
     };
