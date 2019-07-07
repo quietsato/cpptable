@@ -25,22 +25,60 @@ tbl::Table::Table(int row, int col) {
     this->row = row;
     this->col = col;
 
-    this->type = BOTH_TITLE;
+    setStyle(BOTH_TITLE);
+}
 
-    this->hBorderChar = '-';
-    this->vBorderChar = '|';
-    this->titleBorder = true;
-    this->titleHBorderChar = '=';
-    this->titleVBorderChar = ':';
-    this->crossChar = '+';
+void tbl::Table::setStyle(Type t){
+    type = t;
+    switch (type)
+    {
+    case ALL:
+        this->hBorderChar = '-';
+        this->vBorderChar = '|';
+        this->outerHBorderChar = '-';
+        this->outerVBorderChar = '|';
+        this->titleHBorderChar = '=';
+        this->titleVBorderChar = ':';
+        this->crossChar = '+';
+        break;
+    
+    case ROW_TITLE:
+        this->hBorderChar = ' ';
+        this->vBorderChar = '|';
+        this->outerHBorderChar = '-';
+        this->outerVBorderChar = '|';
+        this->titleHBorderChar = '=';
+        this->titleVBorderChar = '|';
+        this->crossChar = '+';
+        break;
+
+    case COL_TITLE:
+        this->hBorderChar = '-';
+        this->vBorderChar = ' ';
+        this->outerHBorderChar = '-';
+        this->outerVBorderChar = '|';
+        this->titleHBorderChar = '-';
+        this->titleVBorderChar = ':';
+        this->crossChar = '+';
+        break;
+
+    case BOTH_TITLE:
+        this->hBorderChar = ' ';
+        this->vBorderChar = ' ';
+        this->outerHBorderChar = '-';
+        this->outerVBorderChar = '|';
+        this->titleHBorderChar = '=';
+        this->titleVBorderChar = ':';
+        this->crossChar = '+';
+        break;
+    }
 }
 
 void tbl::Table::add_row(vector<string> cols) {
     while (cols.size() < this->row)
-        cols.emplace_back("");
+        cols.push_back("");
 
-    for (int i = 0; i < this->row; i++)
-        this->content.push_back(cols);
+    this->content.push_back(cols);
 }
 
 void tbl::Table::delete_row(int i) {
@@ -48,11 +86,15 @@ void tbl::Table::delete_row(int i) {
         this->content.erase(this->content.begin() + i);
 }
 
+void tbl::Table::clear(){
+    this->content.clear();
+}
+
 string tbl::Table::to_string() {
     string str;
 
-    this->colWidth.resize(this->col);
-    this->rowHeight.resize(this->row);
+    this->colWidth.resize(this->col, 0);
+    this->rowHeight.resize(this->row, 0);
 
     for (int r = 0; r < this->row; r++) {
         for (int c = 0; c < this->col; c++) {
@@ -65,11 +107,11 @@ string tbl::Table::to_string() {
     this->crossPos = findCross(colWidth);
 
     str += hLine();
-    cout << str;
 
     for (int i = 0; i < row; i++) {
         str += row_to_string(i);
-        str += innerHLine(!(row == 1 || i > 1));
+        if(i == row - 1) break;
+        str += innerHLine(!(row == 1 || i > 0));
     }
 
     str += hLine();
@@ -84,8 +126,8 @@ void tbl::Table::show() {
 string tbl::Table::hLine() {
     string str;
     str += this->crossChar;
-    for (int i = 0; i < width; i++) {
-        str += this->hBorderChar;
+    for (int i = 0; i < width - 1; i++) {
+        str += this->outerHBorderChar;
     }
     str += this->crossChar;
     return str + '\n';
@@ -93,7 +135,6 @@ string tbl::Table::hLine() {
 
 string tbl::Table::row_to_string(int r) {
     string ret;
-    ret += vBorderChar;
 
     vector<string> _row = content[r];
     int _height = rowHeight[r];
@@ -108,24 +149,44 @@ string tbl::Table::row_to_string(int r) {
             lines.push_back(cell.substr(0, pos));
             cell.erase(0, pos + 1);
         }
+        lines.push_back(cell);
+        lines.resize(_height);
         separate.push_back(lines);
+        lines.clear();
     }
 
+    bool isColTitle = true;
     for(int l = 0; l < _height; l++){
-        for(const vector<string>& cell: separate){
-            ret += cell[l];
-            ret += vBorderChar;
+        ret += outerVBorderChar;
+        for(int c = 0; c < col; c++){
+            separate[c][l].resize(colWidth[c], ' ');
+            ret += separate[c][l];
+            if (isColTitle) {
+                if (type == ROW_TITLE)
+                    ret += vBorderChar;
+                else
+                    ret += titleVBorderChar;
+
+                isColTitle = false;
+            } 
+            else
+            if(c == col - 1)
+                ret += outerVBorderChar;
+            else
+                ret += vBorderChar;
         }
+        isColTitle = true;
+        ret += '\n';
     }
 
-    return ret + '\n';
+    return ret;
 }
 
 string tbl::Table::innerHLine(bool isRowTitle) {
     bool isColTitle = true;
     string str;
-    str += crossChar;
-    for (int i = 0; i < width; i++) {
+    str += outerVBorderChar;
+    for (int i = 0; i < width - 1; i++) {
         auto found = find(crossPos.begin(), crossPos.end(), i);
         if (found != crossPos.end()) {
             if (isColTitle) {
@@ -135,30 +196,43 @@ string tbl::Table::innerHLine(bool isRowTitle) {
                     str += titleVBorderChar;
 
                 isColTitle = false;
-            } else
+            } 
+            else if(type == BOTH_TITLE || type == ROW_TITLE){
+                if(type == BOTH_TITLE && isRowTitle)
+                    str += titleHBorderChar;
+                else
+                    str += vBorderChar;
+                
+            }    
+            else if(type == COL_TITLE)
+                str += hBorderChar;
+            else
                 str += vBorderChar;
-        } else {
+
+        } 
+        else {
             if (isRowTitle) {
                 if (type == COL_TITLE)
                     str += hBorderChar;
                 else
                     str += titleHBorderChar;
-            } else
+            } 
+            else
                 str += hBorderChar;
         }
     }
-    str += crossChar;
+    str += outerVBorderChar;
     str += '\n';
 
     return str;
 }
 
 int getWidth(const string &s) {
-    int w = 0, prev = 0;
-    size_t f;
-    while ((f = s.find('\n')) != string::npos) {
+    int w = 0;
+    size_t f = -1, prev = 0;
+    while ((f = s.find('\n', prev + 1)) != string::npos) {
         w = max(w, (int) (f - prev));
-        prev = f;
+        prev = f + 1;
     }
     return max(w, (int) (s.size() - prev));
 }
@@ -169,10 +243,16 @@ int getHeight(const string &s) {
 
 vector<int> findCross(const vector<int> &col) {
     int i = 0;
+    bool first = true;
     vector<int> ret;
-    for (int p : col) {
-        i += p;
-        ret.emplace_back(i);
+    
+    for (int j = 0; j < col.size() - 1; j++) {
+        i += col[j];
+        if(first)
+            first = false;
+        else
+            i++;
+        ret.push_back(i);
     }
 
     return ret;
