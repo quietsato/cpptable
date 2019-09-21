@@ -5,19 +5,24 @@ int tableTest();
 
 int main(void)
 {
-    if (cellTest() == -1){
+    if (cellTest() == -1)
+    {
         std::cerr << "Cell Test Failure..." << std::endl;
         return -1;
     }
-    std::cout << "Cell Test Passed!\n" << std::endl;
-    
-    if(tableTest() == -1){
+    std::cout << "Cell Test Passed!\n"
+              << std::endl;
+
+    if (tableTest() == -1)
+    {
         std::cerr << "Table Test Failure..." << std::endl;
         return -1;
     }
-    std::cout << "Table Test Passed!\n" << std::endl;
+    std::cout << "Table Test Passed!\n"
+              << std::endl;
 
-    std::cout << '\n' << "All Test Passed!" << std::endl;
+    std::cout << '\n'
+              << "All Test Passed!" << std::endl;
     return 0;
 }
 
@@ -51,13 +56,20 @@ int cellTest()
     return 0;
 }
 
-int tableTest(){
+int tableTest()
+{
     auto t = table::Table(3, 4);
-    for(auto i = 0; i < 3; i++){
-        for(auto j = 0; j < 4; j++){
-            t.getCell(i, j)->setValue("Hello World\nunko");
-            if(i == j)
+    for (auto i = 0; i < 3; i++)
+    {
+        for (auto j = 0; j < 4; j++)
+        {
+            t.getCell(i, j)->setValue("Hello World\n" + std::to_string(i) + "," + std::to_string(j));
+            t.setBorder(i, j, table::RIGHT, false);
+
+            if (i == j)
+            {
                 t.getCell(i, j)->setValue(std::to_string(i) + std::to_string(j));
+            }
         }
     }
     std::cout << t.toString() << std::endl;
