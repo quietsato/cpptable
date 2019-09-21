@@ -2,6 +2,7 @@
 #define INCLUDE_HPP
 
 #include <algorithm>
+#include <array>
 #include <iostream>
 #include <vector>
 
@@ -28,7 +29,32 @@ public:
     std::vector<std::string> toVector();
 };
 
-class Table
+enum BorderPosition
+{
+    TOP = 0,
+    BOTTOM = 1,
+    LEFT = 2,
+    RIGHT = 3
+};
+
+class Border
+{
+private:
+    int rowCount;
+    int colCount;
+    void updateBorderInfo();
+    std::vector<std::vector<bool>> hBorders;
+    std::vector<std::vector<bool>> vBorders;
+
+public:
+    Border(int, int);
+    ~Border();
+    void resize(int, int);
+    std::array<bool, 4> getBorder(int, int);
+    void setBorder(int, int, BorderPosition, bool);
+};
+
+class Table : public Border
 {
 private:
     std::vector<std::vector<table::Cell>> rows;
