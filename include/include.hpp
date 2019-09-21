@@ -58,6 +58,9 @@ class Table : public Border
 {
 private:
     std::vector<std::vector<table::Cell>> rows;
+    std::string outerHorizontalLine();
+    std::string innerHorizontalLine(int);
+    std::string rowToString(int);
     void updateTableInfo();
     int calculateWidth();
     int rowCount;
