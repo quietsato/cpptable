@@ -2,8 +2,8 @@ CXX = g++
 CXXFLAGS = -std=c++11 -Wall -O2 -pipe -Iheader
 INCLUDE = header/include.hpp
 
-table.a: cell.o border.o table.o
-	ar ru $@ $^
+libtable.a: cell.o border.o table.o
+	ar r $@ $^
 
 table.o: source/table.cpp
 	$(CXX) $(CXXFLAGS) -o $@ -c $^
@@ -14,8 +14,8 @@ border.o: source/border.cpp
 cell.o: source/cell.cpp
 	$(CXX) $(CXXFLAGS) -o $@ -c $^
 
-test: table.a test/main.cpp
-	$(CXX) $(CXXFLAGS) -o test/$@ $^
+test: test/main.cpp libtable.a
+	$(CXX) $(CXXFLAGS) $< -o test/$@ -L./ -ltable
 	./test/$@
 
 clean:
