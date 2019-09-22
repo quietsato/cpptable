@@ -25,13 +25,13 @@ void Border::resize(int newRowCount, int newColCount) {
   while (this->hBorders.size() > newRowCount + 1)
     this->hBorders.pop_back();
 
-  for (auto hRow : this->hBorders) {
+  for (auto &hRow : this->hBorders) {
     while (hRow.size() < newColCount)
       hRow.push_back(true);
     while (hRow.size() > newColCount)
       hRow.pop_back();
 
-    for (auto vRow : this->vBorders) {
+    for (auto &vRow : this->vBorders) {
       while (vRow.size() < newColCount + 1)
         vRow.push_back(true);
       while (vRow.size() > newColCount + 1)

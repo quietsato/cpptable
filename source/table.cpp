@@ -27,7 +27,7 @@ void Table::resize(int newRowCount, int newColCount) {
   while (this->rows.size() > newRowCount)
     this->rows.pop_back();
 
-  for (auto row : this->rows) {
+  for (auto &row : this->rows) {
     while (row.size() < newColCount)
       row.push_back(table::Cell());
     while (row.size() > newColCount)
@@ -53,7 +53,7 @@ void Table::updateTableInfo() {
 
 int Table::calculateWidth() {
   int w = 1;
-  for (auto c : this->rows[0])
+  for (auto &c : this->rows[0])
     w += c.getWidth() + 1;
   return w;
 }
@@ -135,7 +135,7 @@ std::vector<table::Cell> createRow(int size) {
 
 int calculateRowHeight(std::vector<table::Cell> row) {
   int h = 0;
-  for (auto c : row)
+  for (auto &c : row)
     h = std::max(c.getHeight(), h);
   return h;
 }
