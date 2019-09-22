@@ -18,22 +18,24 @@ void Border::resize(int newRowCount, int newColCount) {
   while (this->vBorders.size() < newRowCount)
     this->vBorders.push_back(std::vector<bool>(newColCount + 1, true));
   while (this->vBorders.size() > newRowCount)
-    this->vBorders.erase(this->vBorders.end());
+    this->vBorders.pop_back();
 
   while (this->hBorders.size() < newRowCount + 1)
     this->hBorders.push_back(std::vector<bool>(newColCount, true));
   while (this->hBorders.size() > newRowCount + 1)
-    this->hBorders.erase(this->hBorders.end());
+    this->hBorders.pop_back();
 
   for (auto hRow : this->hBorders) {
-    hRow.resize(newColCount, true);
+    while (hRow.size() < newColCount)
+      hRow.push_back(true);
     while (hRow.size() > newColCount)
-      hRow.erase(hRow.end());
+      hRow.pop_back();
 
     for (auto vRow : this->vBorders) {
-      vRow.resize(newColCount + 1, true);
+      while (vRow.size() < newColCount + 1)
+        vRow.push_back(true);
       while (vRow.size() > newColCount + 1)
-        vRow.erase(vRow.end());
+        vRow.pop_back();
     }
   }
 

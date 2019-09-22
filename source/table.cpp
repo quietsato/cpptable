@@ -25,12 +25,13 @@ void Table::resize(int newRowCount, int newColCount) {
   while (this->rows.size() < newRowCount)
     this->rows.push_back(createRow(newColCount));
   while (this->rows.size() > newRowCount)
-    this->rows.erase(this->rows.end());
+    this->rows.pop_back();
 
   for (auto row : this->rows) {
-    row.resize(newColCount);
+    while (row.size() < newColCount)
+      row.push_back(table::Cell());
     while (row.size() > newColCount)
-      row.erase(row.end());
+      row.pop_back();
   }
   this->updateTableInfo();
 }
